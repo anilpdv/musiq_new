@@ -3,7 +3,9 @@ const ffmpeg = require('fluent-ffmpeg');
 const express = require('express');
 const router = express.Router();
 
+const ffmpegPath = require('ffmpeg-static');
 
+ffmpeg.setFfmpegPath(ffmpegPath);
 router.get('/listen/:id/:name', (req, res) => {
     let stream = ytdl('https://www.youtube.com/watch?v=' + req.params.id, {
         quality: 'highestaudio',
