@@ -34,7 +34,6 @@
     "he": "^1.2.0",
     "morgan": "^1.9.1",
     "youtube-dl": "^3.0.1",
-    "youtube-dl-exec": "^2.4.6",
     "youtube-playlist": "^1.0.2",
     "ytdl-core": "^4.11.5"
   }
