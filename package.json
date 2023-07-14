@@ -24,18 +24,17 @@
   },
   "homepage": "https://github.com/anilpdv/musiq#readme",
   "dependencies": {
-    "airbrake-js": "^2.0.0-beta.3",
-    "axios": "^1.4.0",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "express-oas-generator": "^1.0.23",
     "ffmpeg-static": "^5.1.0",
     "fluent-ffmpeg": "^2.1.2",
-    "he": "^1.2.0",
-    "morgan": "^1.9.1",
-    "youtube-dl": "^3.0.1",
-    "youtube-playlist": "^1.0.2",
+    "morgan": "^1.10.0",
+    "youtubei": "^1.1.2",
     "ytdl-core": "^4.11.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
   }
 }

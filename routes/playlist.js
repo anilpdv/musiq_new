@@ -1,16 +1,41 @@
-const ytlist = require('youtube-playlist');
-const express = require('express');
+const express = require("express");
+const { Client } = require("youtubei");
+const getCircularReplacer = require("../utils/circularDepedencies");
+const youtube = new Client();
 const router = express.Router();
 
-router.get('/playlist/:id', (req, res) => {
-  const url = 'https://www.youtube.com/playlist?list=' + req.params.id;
-
-  ytlist(url, ['id', 'name']).then(list => {
-    res.json({
-      playlist: list.data.playlist,
-      list_length: list.data.playlist.length,
+router.get("/playlist/search/:q", async (req, res) => {
+  try {
+    const shelves = await youtube.search(`${req.params.q}`, {
+      type: "playlist",
     });
-  });
+
+    const items = shelves.items.map((item) =>
+      JSON.parse(JSON.stringify(item, getCircularReplacer()))
+    );
+
+    res.json(items);
+  } catch (err) {
+    console.log(err);
+    res.errored({ message: "Something went wrong" });
+  }
+});
+
+router.get("/getplaylist/:id", async (req, res) => {
+  try {
+    const playlist = await youtube.getPlaylist(`${req.params.id}`);
+
+    if (playlist.videos.items.length) {
+      const items = playlist.videos.items.map((item) =>
+        JSON.parse(JSON.stringify(item, getCircularReplacer()))
+      );
+
+      res.json(items);
+    }
+  } catch (err) {
+    console.log(err);
+    res.errored({ message: "Something went wrong" });
+  }
 });
 
 module.exports = router;
