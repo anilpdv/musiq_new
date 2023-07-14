@@ -4,7 +4,7 @@ const express = require('express');
 const router = express.Router();
 
 
-router.get('/listen/:id', (req, res) => {
+router.get('/listen/:id/:name', (req, res) => {
     let stream = ytdl('https://www.youtube.com/watch?v=' + req.params.id, {
         quality: 'highestaudio',
     });
@@ -20,7 +20,7 @@ router.get('/listen/:id', (req, res) => {
         });
 
     if (converter) {
-        res.header('Content-Disposition', `attachment; filename="audio.mp3"`);
+        res.header('Content-Disposition', `attachment; filename=${req.params.name}`);
         converter.pipe(res);
     } else {
         res.sendStatus(500);
