@@ -1,0 +1,8 @@
+{
+    "appService.zipIgnorePattern": [
+        "node_modules{,/**}",
+        ".vscode{,/**}"
+    ],
+    "appService.defaultWebAppToDeploy": "/subscriptions/178da2d3-11f1-44a3-a194-8dd8918cc81e/resourceGroups/appsvc_linux_centralus/providers/Microsoft.Web/sites/musiq4",
+    "appService.deploySubpath": "."
+}
