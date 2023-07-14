@@ -3,22 +3,28 @@ const ffmpeg = require('fluent-ffmpeg');
 const express = require('express');
 const router = express.Router();
 
-// ffmpeg.setFfmpegPath("path/to/your/ffmpeg"); // Set this to the path where you have FFmpeg installed.
 
 router.get('/listen/:id', (req, res) => {
     let stream = ytdl('https://www.youtube.com/watch?v=' + req.params.id, {
         quality: 'highestaudio',
     });
 
-    res.header('Content-Disposition', `attachment; filename="audio.mp3"`);
-    ffmpeg(stream)
+    const converter = ffmpeg(stream)
         .audioBitrate(128)
         .format('mp3')
         .on('error', (err) => {
             console.error(err);
-            res.sendStatus(500);
-        })
-        .pipe(res);
+            if (!res.headersSent) {
+                res.sendStatus(500);
+            }
+        });
+
+    if (converter) {
+        res.header('Content-Disposition', `attachment; filename="audio.mp3"`);
+        converter.pipe(res);
+    } else {
+        res.sendStatus(500);
+    }
 });
 
 module.exports = router;
