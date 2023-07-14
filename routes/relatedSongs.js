@@ -5,7 +5,7 @@ const router = express.Router();
 const getCircularReplacer = require("../utils/circularDepedencies");
 const youtube = new Client();
 
-router.get("/getvideo/:id", async (req, res) => {
+router.get("/getvideo/:id", async (req, res, next) => {
   try {
     const video = await youtube.getVideo(`${req.params.id}`);
 
@@ -17,8 +17,7 @@ router.get("/getvideo/:id", async (req, res) => {
       res.json(items);
     }
   } catch (err) {
-    console.log(err);
-    throw err;
+    next(err);
   }
 });
 

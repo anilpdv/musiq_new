@@ -5,7 +5,7 @@ const getCircularReplacer = require("../utils/circularDepedencies");
 
 const youtube = new Client();
 
-router.get("/search/:q", async (req, res) => {
+router.get("/search/:q", async (req, res, next) => {
   try {
     const shelves = await youtube.search(`${req.params.q}`, {
       type: "video",
@@ -17,8 +17,7 @@ router.get("/search/:q", async (req, res) => {
 
     res.json(items);
   } catch (err) {
-    console.log(err);
-    res.errored({ message: "Something went wrong" });
+    next(err);
   }
 });
 
