@@ -18,6 +18,20 @@ app.use(morgan("combined"));
 expressOasGenerator.init(app, {});
 app.use(cors());
 
+// server check
+app.get("/", (req, res) => {
+  return res.json({
+    status: 200,
+    routes: {
+      searchRoute: "/api/search/:q",
+      listenRoute: "/api/listen/:id/:name",
+      relatedRoute: "/api/getvideo/:id",
+      playlistRoute: "/api/playlist/search/:q",
+      playlistRouteById: "/api/getplaylist/:id",
+    },
+  });
+});
+
 // : middle ware
 app.use("/api", searchRoute);
 app.use("/api", listenRoute);
