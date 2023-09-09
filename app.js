@@ -1,11 +1,9 @@
 // : loading the modules needed
 const express = require("express");
-const expressOasGenerator = require("express-oas-generator");
-const path = require("path");
 const cors = require("cors");
 const morgan = require("morgan");
-const compression = require("compression");
-
+const swaggerUi = require("swagger-ui-express");
+const swaggerDocument = require("./swagger.json");
 // : routes
 const searchRoute = require("./routes/search");
 const listenRoute = require("./routes/listen");
@@ -16,9 +14,8 @@ const app = express();
 
 // : oas setup
 app.use(morgan("combined"));
-expressOasGenerator.init(app, {});
 app.use(cors());
-app.use(compression());
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // server check
 app.get("/", (req, res) => {

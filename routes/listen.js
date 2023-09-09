@@ -20,7 +20,7 @@ router.get("/listen/:id/:name", (req, res, next) => {
 
     const converter = ffmpeg(stream)
       .audioCodec("libmp3lame")
-      .audioBitrate("128k")
+      .audioQuality(0)
       .format("mp3")
       .on("error", (err) => {
         console.error(err);
