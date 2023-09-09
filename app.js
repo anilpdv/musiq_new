@@ -4,6 +4,7 @@ const expressOasGenerator = require("express-oas-generator");
 const path = require("path");
 const cors = require("cors");
 const morgan = require("morgan");
+const compression = require("compression");
 
 // : routes
 const searchRoute = require("./routes/search");
@@ -17,6 +18,7 @@ const app = express();
 app.use(morgan("combined"));
 expressOasGenerator.init(app, {});
 app.use(cors());
+app.use(compression());
 
 // server check
 app.get("/", (req, res) => {

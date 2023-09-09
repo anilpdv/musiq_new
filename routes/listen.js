@@ -14,10 +14,12 @@ router.get("/listen/:id/:name", (req, res, next) => {
 
     let stream = ytdl("https://www.youtube.com/watch?v=" + id, {
       quality: "highestaudio",
+      filter: "audioonly",
+      highWaterMark: 1 << 25,
     });
 
     const converter = ffmpeg(stream)
-      .audioBitrate(128)
+      .audioBitrate(256)
       .format("mp3")
       .on("error", (err) => {
         console.error(err);
@@ -31,6 +33,7 @@ router.get("/listen/:id/:name", (req, res, next) => {
         "Content-Disposition",
         `attachment; filename=${req.params.name}`
       );
+      res.header("Cache-Control", "public, max-age=3600");
       converter.pipe(res);
     } else {
       res.sendStatus(500);
