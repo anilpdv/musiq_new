@@ -12,7 +12,7 @@ const youtube = new Client();
 
 const getVideo = async (id) => {
   // Get a video from YouTube.
-  const video = await youtube.getVideo(`${req.params.id}`);
+  const video = await youtube.getVideo(id);
 
   // Get the related videos.
   if (video && video.related) {
