@@ -13,9 +13,10 @@ const playlistRoute = require("./routes/playlist.js");
 const app = express();
 
 // : oas setup
+
+app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use(morgan("combined"));
 app.use(cors());
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // server check
 app.get("/", (req, res) => {

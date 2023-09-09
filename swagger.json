@@ -5,9 +5,8 @@
       "description": "API Documentation",
       "version": "1.0.0"
     },
-    "host" : "https://musiq-ecf9a99fa8d9.herokuapp.com",
     "basePath": "/api",
-    "schemes": ["http"],
+    "schemes": ["http", "https"],
     "paths": {
       "/search/{q}": {
         "get": {
