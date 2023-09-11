@@ -33,7 +33,7 @@
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.0",
     "youtubei": "^1.1.2",
-    "ytdl-core": "^4.10.0"
+    "ytdl-core": "git+ssh://git@github.com:khlevon/node-ytdl-core.git#v4.11.4-patch.2"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"
