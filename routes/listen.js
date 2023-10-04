@@ -25,7 +25,7 @@ router.get("/listen/:id/:name", (req, res, next) => {
     });
 
     // Convert the stream to mp3
-    const converter = convert(stream);
+    const converter = convert(stream, res);
 
     if (converter) {
       // Set response headers
@@ -44,7 +44,7 @@ router.get("/listen/:id/:name", (req, res, next) => {
 });
 
 // Convert a stream to mp3
-const convert = (stream) => {
+const convert = (stream, res) => {
   return ffmpeg(stream)
     .audioCodec("libmp3lame")
     .audioQuality(0)
