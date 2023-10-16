@@ -4,15 +4,12 @@
 // Finally, it pipes the converted stream to the response.
 
 const ytdl = require("ytdl-core");
-const ffmpeg = require("fluent-ffmpeg");
 const express = require("express");
-
 const router = express.Router();
-
+const ffmpeg = require("fluent-ffmpeg");
 const ffmpegPath = require("ffmpeg-static");
-
+const cp = require("child_process");
 ffmpeg.setFfmpegPath(ffmpegPath);
-
 router.get("/listen/:id/:name", (req, res, next) => {
   try {
     const { id, name } = req.params;
@@ -43,6 +40,63 @@ router.get("/listen/:id/:name", (req, res, next) => {
   }
 });
 
+router.get("/watch/:id/:name", async (req, res) => {
+  const { id, name } = req.params;
+  let url = "https://www.youtube.com/watch?v=" + id;
+
+  res.header("Content-Disposition", `attachment; filename=${name}`);
+
+  let video = ytdl(url, { filter: "videoonly" });
+  let audio = ytdl(url, { filter: "audioonly", highWaterMark: 1 << 25 });
+
+  const ffmpegProcess = cp.spawn(
+    ffmpegPath,
+    [
+      "-i",
+      "pipe:3",
+      "-i",
+      "pipe:4",
+      "-map",
+      "0:v",
+      "-map",
+      "1:a",
+      "-c:v",
+      "copy",
+      "-c:a",
+      "libmp3lame",
+      "-crf",
+      "27",
+      "-preset",
+      "veryfast",
+      "-movflags",
+      "frag_keyframe+empty_moov",
+      "-f",
+      "mp4",
+      "-loglevel",
+      "error",
+      "-",
+    ],
+    {
+      stdio: ["pipe", "pipe", "pipe", "pipe", "pipe"],
+    }
+  );
+
+  video.pipe(ffmpegProcess.stdio[3]);
+  audio.pipe(ffmpegProcess.stdio[4]);
+  ffmpegProcess.stdio[1].pipe(res);
+
+  let ffmpegLogs = "";
+
+  ffmpegProcess.stdio[2].on("data", (chunk) => {
+    ffmpegLogs += chunk.toString();
+  });
+
+  ffmpegProcess.on("exit", (exitCode) => {
+    if (exitCode === 1) {
+      console.error(ffmpegLogs);
+    }
+  });
+});
 // Convert a stream to mp3
 const convert = (stream, res) => {
   return ffmpeg(stream)
