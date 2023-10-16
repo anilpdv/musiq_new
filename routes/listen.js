@@ -114,6 +114,12 @@ router.get("/watch/:id/:name", async (req, res) => {
     ffmpegLogs += chunk.toString();
   });
 
+  res.on("close", () => {
+    // Delete the video file once the response has been closed
+    video.destroy();
+    audio.destroy();
+  });
+
   ffmpegProcess.on("exit", (exitCode) => {
     if (exitCode === 1) {
       console.error(ffmpegLogs);
