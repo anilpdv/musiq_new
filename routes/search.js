@@ -9,7 +9,7 @@ const getCircularReplacer = require("../utils/circularDepedencies");
 
 const youtube = new Client();
 
-// GET /search/:q
+// GET   /search/:q
 router.get("/search/:q", async (req, res, next) => {
   try {
     const shelves = await youtube.search(`${req.params.q}`, {
