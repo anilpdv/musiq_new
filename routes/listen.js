@@ -10,6 +10,7 @@ const ffmpeg = require("fluent-ffmpeg");
 const ffmpegPath = require("ffmpeg-static");
 const cp = require("child_process");
 ffmpeg.setFfmpegPath(ffmpegPath);
+
 router.get("/listen/:id/:name", (req, res, next) => {
   try {
     const { id, name } = req.params;
@@ -42,12 +43,28 @@ router.get("/listen/:id/:name", (req, res, next) => {
 
 router.get("/watch/:id/:name", async (req, res) => {
   const { id, name } = req.params;
-  let url = "https://www.youtube.com/watch?v=" + id;
+  const url = "https://www.youtube.com/watch?v=" + id;
+  const info = await ytdl.getInfo(id);
 
-  res.header("Content-Disposition", `attachment; filename=${name}`);
+  const video = await ytdl(url, {
+    quality: "highestvideo",
+    filter: "videoonly",
+    highWaterMark: 1 << 25,
+  });
+  // Filter to audio formats and sort by bitrate
+  const audioFormats = info.formats
+    .filter((f) => f.mimeType.includes("audio"))
+    .sort((a, b) => b.audioBitrate - a.audioBitrate);
+  // console.log(audioFormats);
+  // Try to find English
+  const englishAudio = audioFormats.find((f) => {
+    return f.audioTrack && f.audioTrack.id.startsWith("en");
+  });
 
-  let video = ytdl(url, { filter: "videoonly" });
-  let audio = ytdl(url, { filter: "audioonly", highWaterMark: 1 << 25 });
+  // Download using best available English or default highest quality
+  const audio = await ytdl(url, {
+    format: englishAudio || audioFormats[0],
+  });
 
   const ffmpegProcess = cp.spawn(
     ffmpegPath,
@@ -63,11 +80,8 @@ router.get("/watch/:id/:name", async (req, res) => {
       "-c:v",
       "copy",
       "-c:a",
-      "libmp3lame",
-      "-crf",
-      "27",
-      "-preset",
-      "veryfast",
+      "aac", // Use AAC for audio for better mobile support
+
       "-movflags",
       "frag_keyframe+empty_moov",
       "-f",
@@ -81,9 +95,13 @@ router.get("/watch/:id/:name", async (req, res) => {
     }
   );
 
+  res.setHeader("Content-Type", "video/mp4"); // Set the correct MIME type
+  res.setHeader("Accept-Ranges", "bytes"); // Enable byte range requests
+
+  ffmpegProcess.stdio[1].pipe(res);
+
   video.pipe(ffmpegProcess.stdio[3]);
   audio.pipe(ffmpegProcess.stdio[4]);
-  ffmpegProcess.stdio[1].pipe(res);
 
   let ffmpegLogs = "";
 
@@ -96,19 +114,6 @@ router.get("/watch/:id/:name", async (req, res) => {
       console.error(ffmpegLogs);
     }
   });
-});
-
-router.get("/getInfo/:id", async (req, res) => {
-  const { id } = req.params;
-  let url = "https://www.youtube.com/watch?v=" + id;
-
-  try {
-    let info = await ytdl.getInfo(url);
-    res.send(info);
-  } catch (err) {
-    console.log(err);
-    res.sendStatus(500);
-  }
 });
 
 // Convert a stream to mp3
@@ -124,5 +129,17 @@ const convert = (stream, res) => {
       }
     });
 };
+
+// router for geting info json of video id
+router.get("/info/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const info = await ytdl.getInfo(id);
+    res.json(info);
+  } catch (err) {
+    console.error(err);
+    res.sendStatus(500);
+  }
+});
 
 module.exports = router;
