@@ -51,6 +51,7 @@ router.get("/watch/:id/:name", async (req, res) => {
     filter: "videoonly",
     highWaterMark: 1 << 25,
   });
+
   // Filter to audio formats and sort by bitrate
   const audioFormats = info.formats
     .filter((f) => f.mimeType.includes("audio"))
@@ -94,13 +95,20 @@ router.get("/watch/:id/:name", async (req, res) => {
       stdio: ["pipe", "pipe", "pipe", "pipe", "pipe"],
     }
   );
-  const videoLength = parseInt(info.videoDetails.lengthSeconds);
-  const contentLength = videoLength * 1000 * 1000; // Convert to bytes
-  const contentRange = `bytes 0-${contentLength - 1}/${contentLength}`;
+  // Calculate content length (total size of video)
+  const videoFormat = info.formats.find((f) => f.mimeType.includes("video"));
 
+  // Calculate content length based on video length and bitrate
+  const videoLengthInSeconds = parseInt(videoFormat.approxDurationMs) / 1000; // Convert to seconds
+  const videoBitrate = parseInt(videoFormat.bitrate);
+  const contentLength = Math.floor((videoBitrate / 8) * videoLengthInSeconds);
+  // Calculate content range (range of bytes being sent)
+  const start = 0;
+  const end = contentLength - 1;
+  const contentRange = `bytes ${start}-${end}/${contentLength}`;
   res.setHeader("Content-Type", "video/mp4"); // Set the correct MIME type
   res.setHeader("Accept-Ranges", "bytes"); // Enable byte range requests
-
+  res.setHeader("Content-Range", contentRange); // Set the content range
   ffmpegProcess.stdio[1].pipe(res);
 
   video.pipe(ffmpegProcess.stdio[3]);
