@@ -12,17 +12,17 @@ const youtube = new Client();
 
 const getVideo = async (id) => {
   // Get a video from YouTube.
-  const video = await youtube.getVideo(id);
+  const video = await youtube.getVideo(id, { type: "video" });
 
   // Get the related videos.
   if (video && video.related) {
     // Get the first page of related videos.
     await video.related.next(0);
 
-    // Convert the items to a JSON string.
-    const items = video.related.items.map((item) =>
-      JSON.parse(JSON.stringify(item, getCircularReplacer()))
-    );
+    // Sort the items by viewCount.
+    const items = video.related.items
+      .sort((a, b) => b.viewCount - a.viewCount)
+      .map((item) => JSON.parse(JSON.stringify(item, getCircularReplacer())));
 
     return items;
   }
