@@ -40,28 +40,32 @@ router.get("/listen/:id/:name", (req, res, next) => {
     next(err);
   }
 });
-
 router.get("/watch/:id/:name", async (req, res) => {
   const { id, name } = req.params;
   const url = "https://www.youtube.com/watch?v=" + id;
   const info = await ytdl.getInfo(id);
+
+  // Ensure the client supports range requests
+  const range = req.headers.range;
+  if (!range) {
+    res.status(416).send("Range request required");
+    return;
+  }
 
   const video = await ytdl(url, {
     quality: "highestvideo",
     filter: "videoonly",
     highWaterMark: 1 << 25,
   });
-  // Filter to audio formats and sort by bitrate
+
   const audioFormats = info.formats
     .filter((f) => f.mimeType.includes("audio"))
     .sort((a, b) => b.audioBitrate - a.audioBitrate);
-  // console.log(audioFormats);
-  // Try to find English
+
   const englishAudio = audioFormats.find((f) => {
     return f.audioTrack && f.audioTrack.id.startsWith("en");
   });
 
-  // Download using best available English or default highest quality
   const audio = await ytdl(url, {
     format: englishAudio || audioFormats[0],
   });
@@ -80,8 +84,7 @@ router.get("/watch/:id/:name", async (req, res) => {
       "-c:v",
       "copy",
       "-c:a",
-      "aac", // Use AAC for audio for better mobile support
-
+      "aac",
       "-movflags",
       "frag_keyframe+empty_moov",
       "-f",
@@ -95,25 +98,19 @@ router.get("/watch/:id/:name", async (req, res) => {
     }
   );
 
-  res.setHeader("Content-Type", "video/mp4"); // Set the correct MIME type
-  res.setHeader("Accept-Ranges", "bytes"); // Enable byte range requests
+  const totalSize = video._readableState.length + audio._readableState.length;
+
+  const head = {
+    "Content-Length": totalSize,
+    "Content-Type": "video/mp4",
+  };
+
+  res.writeHead(200, head);
 
   ffmpegProcess.stdio[1].pipe(res);
 
   video.pipe(ffmpegProcess.stdio[3]);
   audio.pipe(ffmpegProcess.stdio[4]);
-
-  let ffmpegLogs = "";
-
-  ffmpegProcess.stdio[2].on("data", (chunk) => {
-    ffmpegLogs += chunk.toString();
-  });
-
-  ffmpegProcess.on("exit", (exitCode) => {
-    if (exitCode === 1) {
-      console.error(ffmpegLogs);
-    }
-  });
 });
 
 // Convert a stream to mp3
