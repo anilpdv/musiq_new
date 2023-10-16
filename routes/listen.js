@@ -97,6 +97,20 @@ router.get("/watch/:id/:name", async (req, res) => {
     }
   });
 });
+
+router.get("/getInfo/:id", async (req, res) => {
+  const { id } = req.params;
+  let url = "https://www.youtube.com/watch?v=" + id;
+
+  try {
+    let info = await ytdl.getInfo(url);
+    res.send(info);
+  } catch (err) {
+    console.log(err);
+    res.sendStatus(500);
+  }
+});
+
 // Convert a stream to mp3
 const convert = (stream, res) => {
   return ffmpeg(stream)
