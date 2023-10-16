@@ -100,8 +100,8 @@ router.get("/watch/:id/:name", async (req, res) => {
 
   res.setHeader("Content-Type", "video/mp4"); // Set the correct MIME type
   res.setHeader("Accept-Ranges", "bytes"); // Enable byte range requests
-  res.setHeader("Content-Length", contentLength); // Set the content length
-  res.setHeader("Content-Range", contentRange); // Set the content range
+  // res.setHeader("Content-Length", contentLength); // Set the content length
+  // res.setHeader("Content-Range", contentRange); // Set the content range
 
   ffmpegProcess.stdio[1].pipe(res);
 
