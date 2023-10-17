@@ -5,7 +5,7 @@
 
 const express = require("express");
 const { Client } = require("youtubei");
-
+const ytdl = require("ytdl-core");
 const router = express.Router();
 const getCircularReplacer = require("../utils/circularDepedencies");
 const youtube = new Client();
@@ -41,6 +41,21 @@ router.get("/getvideo/:id", async (req, res, next) => {
     console.error(err);
 
     // Return an error message.
+    res.status(500).send("Something went wrong");
+  }
+});
+
+router.get("/related/:id", async (req, res, next) => {
+  try {
+    let id = req.params.id;
+    const info = await ytdl.getInfo(id);
+    const responseJson = {
+      videoDetails: info.videoDetails,
+      relatedSongs: info.related_videos,
+    };
+    res.json(responseJson);
+  } catch (err) {
+    console.error(err);
     res.status(500).send("Something went wrong");
   }
 });

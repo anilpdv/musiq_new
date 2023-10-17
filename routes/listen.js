@@ -108,6 +108,7 @@ router.get("/watch/:id/:name", async (req, res) => {
   const contentRange = `bytes ${start}-${end}/${contentLength}`;
   res.setHeader("Content-Type", "video/mp4"); // Set the correct MIME type
   res.setHeader("Accept-Ranges", "bytes"); // Enable byte range requests
+  // res.setHeader("Content-Length", contentLength); // Set the content length
   res.setHeader("Content-Range", contentRange); // Set the content range
   ffmpegProcess.stdio[1].pipe(res);
 
@@ -120,11 +121,11 @@ router.get("/watch/:id/:name", async (req, res) => {
     ffmpegLogs += chunk.toString();
   });
 
-  res.on("close", () => {
-    // Delete the video file once the response has been closed
-    video.destroy();
-    audio.destroy();
-  });
+  // res.on("close", () => {
+  //   // Delete the video file once the response has been closed
+  //   video.destroy();
+  //   audio.destroy();
+  // });
 
   ffmpegProcess.on("exit", (exitCode) => {
     if (exitCode === 1) {
