@@ -7,10 +7,10 @@ RUN apk add --no-cache git curl
 # Install templ CLI
 RUN go install github.com/a-h/templ/cmd/templ@latest
 
-# Install tailwindcss standalone CLI
-RUN curl -sLO https://github.com/tailwindlabs/tailwindcss/releases/latest/download/tailwindcss-linux-x64 \
-    && chmod +x tailwindcss-linux-x64 \
-    && mv tailwindcss-linux-x64 /usr/local/bin/tailwindcss
+# Install tailwindcss standalone CLI (musl version for Alpine)
+RUN curl -sLO https://github.com/tailwindlabs/tailwindcss/releases/latest/download/tailwindcss-linux-x64-musl \
+    && chmod +x tailwindcss-linux-x64-musl \
+    && mv tailwindcss-linux-x64-musl /usr/local/bin/tailwindcss
 
 WORKDIR /app
 
