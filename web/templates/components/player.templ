@@ -1,0 +1,70 @@
+package components
+
+import "fmt"
+
+templ Player(id, title, author, playerType string) {
+	<div class="neo-card p-6 mb-8" x-data="{ minimized: false }">
+		<!-- Header -->
+		<div class="flex justify-between items-start mb-4">
+			<div class="flex-1 min-w-0">
+				<div class="flex items-center gap-2 mb-1">
+					if playerType == "audio" {
+						<span class="neo-tag bg-neo-blue text-white">MP3</span>
+					} else {
+						<span class="neo-tag bg-neo-red text-white">MP4</span>
+					}
+					<span class="text-xs text-gray-500 uppercase tracking-wide font-bold">Now Playing</span>
+				</div>
+				<h3 class="font-bold text-lg line-clamp-1">{ title }</h3>
+				<p class="text-gray-600 text-sm">{ author }</p>
+			</div>
+			<button
+				@click="minimized = !minimized"
+				class="neo-btn bg-white text-sm px-3 py-1 ml-4"
+			>
+				<span x-show="!minimized">−</span>
+				<span x-show="minimized">+</span>
+			</button>
+		</div>
+
+		<!-- Player -->
+		<div x-show="!minimized" x-transition>
+			if playerType == "audio" {
+				<div class="bg-neo-bg border-3 border-neo-border p-4 rounded-lg">
+					<audio controls autoplay class="w-full">
+						<source src={ fmt.Sprintf("/api/listen/%s/audio.mp3", id) } type="audio/mpeg"/>
+						Your browser does not support the audio element.
+					</audio>
+				</div>
+			} else {
+				<div class="border-3 border-neo-border rounded-lg overflow-hidden bg-neo-border">
+					<video controls autoplay class="w-full max-h-[400px]">
+						<source src={ fmt.Sprintf("/api/watch/%s/video.mp4", id) } type="video/mp4"/>
+						Your browser does not support the video element.
+					</video>
+				</div>
+			}
+
+			<!-- Download Links -->
+			<div class="flex gap-3 mt-4">
+				if playerType == "audio" {
+					<a
+						href={ templ.SafeURL(fmt.Sprintf("/api/listen/%s/audio.mp3?download=true", id)) }
+						class="neo-btn neo-btn-green text-sm"
+						download
+					>
+						⬇ Download MP3
+					</a>
+				} else {
+					<a
+						href={ templ.SafeURL(fmt.Sprintf("/api/watch/%s/video.mp4?download=true", id)) }
+						class="neo-btn neo-btn-green text-sm"
+						download
+					>
+						⬇ Download MP4
+					</a>
+				}
+			</div>
+		</div>
+	</div>
+}

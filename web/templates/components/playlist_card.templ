@@ -1,0 +1,61 @@
+package components
+
+import "musiq/models"
+import "fmt"
+
+templ PlaylistCard(playlist models.PlaylistResult) {
+	<article class="neo-card overflow-hidden group">
+		<!-- Thumbnail -->
+		<div class="relative overflow-hidden border-b-3 border-neo-border">
+			if len(playlist.Thumbnails) > 0 {
+				<img src={ playlist.Thumbnails[0].URL } alt={ playlist.Title } class="w-full aspect-video object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy"/>
+			} else {
+				<img src={ fmt.Sprintf("https://i.ytimg.com/vi/%s/hqdefault.jpg", playlist.ID) } alt={ playlist.Title } class="w-full aspect-video object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy"/>
+			}
+			<!-- Playlist Badge -->
+			<span class="absolute top-2 right-2 bg-neo-purple text-white text-xs font-bold px-2 py-1 border-2 border-neo-border">
+				PLAYLIST
+			</span>
+			if playlist.VideoCount > 0 {
+				<span class="absolute bottom-2 right-2 bg-neo-border text-white text-xs font-bold px-2 py-1 border-2 border-neo-border">
+					{ fmt.Sprintf("%d videos", playlist.VideoCount) }
+				</span>
+			}
+		</div>
+
+		<!-- Content -->
+		<div class="p-4">
+			<h3 class="font-bold text-sm leading-tight mb-2 line-clamp-2" title={ playlist.Title }>
+				{ playlist.Title }
+			</h3>
+			<p class="text-gray-600 text-xs font-medium mb-3 truncate">{ playlist.Author }</p>
+			<button
+				hx-get={ fmt.Sprintf("/ui/playlist/%s", playlist.ID) }
+				hx-target="#results"
+				hx-swap="innerHTML"
+				class="neo-btn neo-btn-purple w-full text-sm"
+			>
+				View Playlist
+			</button>
+		</div>
+	</article>
+}
+
+templ PlaylistGrid(playlists []models.PlaylistResult) {
+	if len(playlists) > 0 {
+		<div class="mb-4">
+			<span class="neo-tag bg-neo-purple text-white">{ fmt.Sprintf("%d playlists", len(playlists)) }</span>
+		</div>
+		<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+			for _, playlist := range playlists {
+				@PlaylistCard(playlist)
+			}
+		</div>
+	} else {
+		<div class="neo-card p-12 text-center">
+			<div class="text-6xl mb-4">📋</div>
+			<h3 class="text-xl font-bold mb-2">No Playlists Found</h3>
+			<p class="text-gray-600">Try a different search term</p>
+		</div>
+	}
+}

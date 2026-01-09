@@ -1,0 +1,72 @@
+package components
+
+import "musiq/models"
+import "fmt"
+
+templ VideoCard(video models.VideoResult) {
+	<article class="neo-card overflow-hidden group">
+		<!-- Thumbnail -->
+		<div class="relative overflow-hidden border-b-3 border-neo-border">
+			if len(video.Thumbnails) > 0 {
+				<img src={ video.Thumbnails[0].URL } alt={ video.Title } class="w-full aspect-video object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy"/>
+			} else {
+				<img src={ fmt.Sprintf("https://i.ytimg.com/vi/%s/hqdefault.jpg", video.ID) } alt={ video.Title } class="w-full aspect-video object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy"/>
+			}
+			<!-- Duration Badge -->
+			if video.Duration != "" {
+				<span class="absolute bottom-2 right-2 bg-neo-border text-white text-xs font-bold px-2 py-1 border-2 border-neo-border">
+					{ video.Duration }
+				</span>
+			}
+		</div>
+
+		<!-- Content -->
+		<div class="p-4">
+			<h3 class="font-bold text-sm leading-tight mb-2 line-clamp-2" title={ video.Title }>
+				{ video.Title }
+			</h3>
+			<p class="text-gray-600 text-xs font-medium mb-1 truncate">{ video.Author }</p>
+			if video.Views != "" {
+				<p class="text-gray-500 text-xs mb-3">{ video.Views }</p>
+			}
+
+			<!-- Play Buttons -->
+			<div class="flex gap-2 mb-2">
+				<button
+					hx-get={ fmt.Sprintf("/ui/play/%s?type=audio", video.ID) }
+					hx-target="#player"
+					hx-swap="innerHTML"
+					class="neo-btn neo-btn-blue flex-1 text-xs py-2"
+				>
+					▶ MP3
+				</button>
+				<button
+					hx-get={ fmt.Sprintf("/ui/play/%s?type=video", video.ID) }
+					hx-target="#player"
+					hx-swap="innerHTML"
+					class="neo-btn neo-btn-red flex-1 text-xs py-2"
+				>
+					▶ MP4
+				</button>
+			</div>
+
+			<!-- Download Buttons -->
+			<div class="flex gap-2">
+				<a
+					href={ templ.SafeURL(fmt.Sprintf("/api/listen/%s/%s.mp3?download=true", video.ID, "audio")) }
+					class="neo-btn neo-btn-green flex-1 text-xs py-2 text-center"
+					download
+				>
+					⬇ MP3
+				</a>
+				<a
+					href={ templ.SafeURL(fmt.Sprintf("/api/watch/%s/%s.mp4?download=true", video.ID, "video")) }
+					class="neo-btn neo-btn-yellow flex-1 text-xs py-2 text-center"
+					download
+				>
+					⬇ MP4
+				</a>
+			</div>
+		</div>
+	</article>
+}

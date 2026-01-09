@@ -1,0 +1,60 @@
+package pages
+
+import "musiq/web/templates"
+import "musiq/web/templates/components"
+
+templ Home() {
+	@templates.Layout("Home") {
+		<!-- Neo Brutalism Header -->
+		<header class="neo-header">
+			<div class="container mx-auto px-4 max-w-6xl flex justify-between items-center">
+				<a href="/" class="text-3xl font-bold tracking-tight hover:translate-x-1 transition-transform">
+					<span class="bg-neo-border text-neo-yellow px-3 py-1 border-3 border-neo-border">MUSIQ</span>
+				</a>
+				<nav class="flex gap-3" x-data="{ tab: 'videos' }">
+					<button
+						@click="tab = 'videos'; htmx.trigger('#search-input', 'search')"
+						:class="tab === 'videos' ? 'neo-btn neo-btn-blue' : 'neo-btn bg-white'"
+						class="text-sm font-bold uppercase tracking-wide"
+					>Videos</button>
+					<button
+						@click="tab = 'playlists'; htmx.trigger('#search-input', 'search')"
+						:class="tab === 'playlists' ? 'neo-btn neo-btn-purple' : 'neo-btn bg-white'"
+						class="text-sm font-bold uppercase tracking-wide"
+					>Playlists</button>
+				</nav>
+			</div>
+		</header>
+
+		<!-- Main Content -->
+		<main class="container mx-auto px-4 py-8 max-w-6xl">
+			<!-- Search Section -->
+			<div class="mb-8">
+				@components.Search()
+			</div>
+
+			<!-- Player Section -->
+			<section id="player" class="mb-8">
+				<!-- Player loads here via HTMX -->
+			</section>
+
+			<!-- Results Section -->
+			<section id="results">
+				<div class="neo-card p-12 text-center">
+					<div class="text-6xl mb-4">🎵</div>
+					<h2 class="text-2xl font-bold mb-2">Search for Music</h2>
+					<p class="text-gray-600">Type in the search box to find videos and playlists</p>
+				</div>
+			</section>
+		</main>
+
+		<!-- Footer -->
+		<footer class="border-t-3 border-neo-border py-6 mt-12">
+			<div class="container mx-auto px-4 max-w-6xl text-center">
+				<p class="text-sm text-gray-600">
+					Built with <span class="font-bold">Go</span> + <span class="font-bold">HTMX</span> + <span class="font-bold">Neo Brutalism</span>
+				</p>
+			</div>
+		</footer>
+	}
+}

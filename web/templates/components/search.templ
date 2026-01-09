@@ -1,0 +1,32 @@
+package components
+
+templ Search() {
+	<div class="relative">
+		<div class="flex gap-3">
+			<div class="flex-1 relative">
+				<span class="absolute left-4 top-1/2 -translate-y-1/2 text-2xl">🔍</span>
+				<input
+					type="search"
+					id="search-input"
+					name="q"
+					placeholder="Search for music, videos, playlists..."
+					hx-get="/ui/search"
+					hx-trigger="keyup changed delay:300ms, search"
+					hx-target="#results"
+					hx-indicator="#loading"
+					class="neo-input pl-14 text-lg font-medium"
+				/>
+			</div>
+		</div>
+		<div id="loading" class="htmx-indicator mt-4">
+			<div class="neo-card p-4 text-center">
+				<div class="inline-flex items-center gap-2">
+					<div class="w-4 h-4 bg-neo-yellow border-2 border-neo-border animate-bounce"></div>
+					<div class="w-4 h-4 bg-neo-blue border-2 border-neo-border animate-bounce" style="animation-delay: 0.1s"></div>
+					<div class="w-4 h-4 bg-neo-red border-2 border-neo-border animate-bounce" style="animation-delay: 0.2s"></div>
+				</div>
+				<p class="mt-2 font-semibold">Searching...</p>
+			</div>
+		</div>
+	</div>
+}

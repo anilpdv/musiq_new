@@ -1,0 +1,129 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    @apply bg-neo-bg text-neo-border;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+  }
+}
+
+@layer components {
+  /* Neo Brutalism Card */
+  .neo-card {
+    @apply bg-neo-card border-3 border-neo-border shadow-neo rounded-lg;
+    @apply transition-all duration-150 ease-out;
+  }
+
+  .neo-card:hover {
+    @apply translate-x-[2px] translate-y-[2px] shadow-none;
+  }
+
+  /* Neo Brutalism Buttons */
+  .neo-btn {
+    @apply px-4 py-2 font-semibold border-3 border-neo-border shadow-neo-sm rounded-md;
+    @apply transition-all duration-150 ease-out cursor-pointer;
+  }
+
+  .neo-btn:hover {
+    @apply translate-x-[2px] translate-y-[2px] shadow-none;
+  }
+
+  .neo-btn:active {
+    @apply translate-x-[3px] translate-y-[3px];
+  }
+
+  .neo-btn-blue {
+    @apply bg-neo-blue text-white;
+  }
+
+  .neo-btn-red {
+    @apply bg-neo-red text-white;
+  }
+
+  .neo-btn-green {
+    @apply bg-neo-green text-white;
+  }
+
+  .neo-btn-yellow {
+    @apply bg-neo-yellow text-neo-border;
+  }
+
+  .neo-btn-purple {
+    @apply bg-neo-purple text-white;
+  }
+
+  /* Neo Brutalism Input */
+  .neo-input {
+    @apply w-full px-4 py-3 bg-white border-3 border-neo-border rounded-lg;
+    @apply focus:outline-none focus:shadow-neo transition-all duration-150;
+    @apply placeholder:text-gray-400;
+  }
+
+  /* Neo Brutalism Header */
+  .neo-header {
+    @apply bg-neo-yellow border-b-3 border-neo-border py-4;
+  }
+
+  /* Neo Brutalism Tag */
+  .neo-tag {
+    @apply inline-block px-2 py-1 text-xs font-bold border-2 border-neo-border rounded;
+    @apply bg-white;
+  }
+}
+
+@layer utilities {
+  /* Line clamp for text truncation */
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .line-clamp-1 {
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}
+
+/* HTMX indicators */
+.htmx-indicator {
+  display: none;
+}
+
+.htmx-request .htmx-indicator {
+  display: block;
+}
+
+.htmx-request.htmx-indicator {
+  display: block;
+}
+
+/* Custom scrollbar for neo brutalism */
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: #fffef0;
+  border-left: 3px solid #000;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #facc15;
+  border: 3px solid #000;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #eab308;
+}

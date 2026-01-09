@@ -1,0 +1,23 @@
+package components
+
+import "musiq/models"
+
+templ PlaylistVideos(videos []models.VideoResult) {
+	<div>
+		<div class="flex items-center justify-between mb-6">
+			<button
+				hx-get="/ui/search"
+				hx-target="#results"
+				hx-swap="innerHTML"
+				class="neo-btn bg-white text-sm"
+			>
+				← Back to Search
+			</button>
+			<h2 class="text-xl font-bold">
+				<span class="neo-tag bg-neo-purple text-white mr-2">PLAYLIST</span>
+				Videos
+			</h2>
+		</div>
+		@VideoGrid(videos)
+	</div>
+}

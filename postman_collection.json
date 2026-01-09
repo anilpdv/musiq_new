@@ -1,0 +1,208 @@
+{
+	"info": {
+		"_postman_id": "musiq-api-collection",
+		"name": "Musiq API",
+		"description": "Go REST API for streaming YouTube videos as MP3/MP4",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080",
+			"type": "string"
+		},
+		{
+			"key": "videoId",
+			"value": "dQw4w9WgXcQ",
+			"type": "string"
+		},
+		{
+			"key": "playlistId",
+			"value": "PLrAXtmErZgOeiKm4sgNOknGvNjby9efdf",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "Health Check",
+			"item": [
+				{
+					"name": "Root - List Routes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/",
+							"host": ["{{baseUrl}}"],
+							"path": [""]
+						},
+						"description": "Health check endpoint that returns all available API routes"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Search",
+			"item": [
+				{
+					"name": "Search Videos",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/search/lofi",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "search", "lofi"]
+						},
+						"description": "Search YouTube for videos matching the query"
+					},
+					"response": []
+				},
+				{
+					"name": "Search Videos - Custom Query",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/search/:query",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "search", ":query"],
+							"variable": [
+								{
+									"key": "query",
+									"value": "chill beats"
+								}
+							]
+						},
+						"description": "Search YouTube with custom query"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Video Info",
+			"item": [
+				{
+					"name": "Get Video Info",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/info/{{videoId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "info", "{{videoId}}"]
+						},
+						"description": "Get detailed metadata for a YouTube video"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Audio Streaming",
+			"item": [
+				{
+					"name": "Stream MP3 Audio",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/listen/{{videoId}}/audio.mp3",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "listen", "{{videoId}}", "audio.mp3"]
+						},
+						"description": "Stream YouTube video as MP3 audio. The response is an audio/mpeg stream."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Video Streaming",
+			"item": [
+				{
+					"name": "Stream MP4 Video",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/watch/{{videoId}}/video.mp4",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "watch", "{{videoId}}", "video.mp4"]
+						},
+						"description": "Stream YouTube video as MP4. The response is a video/mp4 stream."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Related Videos",
+			"item": [
+				{
+					"name": "Get Related Videos",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/getvideo/{{videoId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "getvideo", "{{videoId}}"]
+						},
+						"description": "Get related videos for a given video ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Video Details + Related",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/related/{{videoId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "related", "{{videoId}}"]
+						},
+						"description": "Get video details along with related videos"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Playlists",
+			"item": [
+				{
+					"name": "Search Playlists",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/playlist/search/lofi",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "playlist", "search", "lofi"]
+						},
+						"description": "Search YouTube for playlists matching the query"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Playlist Videos",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/getplaylist/{{playlistId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "getplaylist", "{{playlistId}}"]
+						},
+						"description": "Get all videos in a playlist"
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
