@@ -2,7 +2,7 @@
 FROM golang:1.23-alpine AS builder
 
 # Install build dependencies
-RUN apk add --no-cache git curl
+RUN apk add --no-cache git curl libstdc++
 
 # Install templ CLI
 RUN go install github.com/a-h/templ/cmd/templ@latest
