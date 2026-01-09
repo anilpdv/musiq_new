@@ -1,0 +1,29 @@
+# Git
+.git
+.gitignore
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# Build artifacts
+musiq
+musiq-server
+tmp/
+
+# Development files
+.air.toml
+.claude/
+
+# Documentation
+README.md
+CLAUDE.md
+postman_collection.json
+
+# macOS
+.DS_Store
+
+# Generated CSS (will be rebuilt in Docker)
+web/static/css/output.css
