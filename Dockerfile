@@ -2,15 +2,13 @@
 FROM golang:1.23-alpine AS builder
 
 # Install build dependencies
-RUN apk add --no-cache git curl libstdc++
+RUN apk add --no-cache git nodejs npm
 
 # Install templ CLI
 RUN go install github.com/a-h/templ/cmd/templ@latest
 
-# Install tailwindcss standalone CLI (musl version for Alpine)
-RUN curl -sLO https://github.com/tailwindlabs/tailwindcss/releases/latest/download/tailwindcss-linux-x64-musl \
-    && chmod +x tailwindcss-linux-x64-musl \
-    && mv tailwindcss-linux-x64-musl /usr/local/bin/tailwindcss
+# Install tailwindcss v3 via npm (v4 has incompatible config format)
+RUN npm install -g tailwindcss@3
 
 WORKDIR /app
 
